@@ -8,6 +8,14 @@ from resnet_blocks import ResNetBlock
 
 
 class Embedding(nn.Module):
+# Initialization (__init__ method):
+
+# z_num: A tuple containing two integers, denoting the dimensions in which the latent vectors will be organized. For example, (h, k) means there will be h groups, each containing k latent vectors.
+# z_dim: An integer denoting the dimensionality of each latent vector.
+# Forward method:
+
+# hyper_net: The hypernetwork model that will take each latent vector and generate the corresponding weight tensor.
+
 
     def __init__(self, z_num, z_dim):
         super(Embedding, self).__init__()
@@ -22,6 +30,9 @@ class Embedding(nn.Module):
             for j in range(k):
                 self.z_list.append(Parameter(torch.fmod(torch.randn(self.z_dim).cuda(), 2)))
 
+#The output of the forward method of the Embedding class is a concatenated tensor of weight tensors. 
+# This output tensor is created by feeding each latent vector in the z_list to the hyper_net. 
+# The resulting weight tensors are concatenated along specified dimensions to produce the output.
     def forward(self, hyper_net):
         ww = []
         h, k = self.z_num
@@ -34,7 +45,12 @@ class Embedding(nn.Module):
 
 
 class PrimaryNetwork(nn.Module):
+# Initialization (__init__ method):
 
+# z_dim: An integer denoting the dimensionality of the latent vector. This is used as an input dimension for the HyperNetwork within the PrimaryNetwork.
+# Forward method:
+
+# x: An input tensor, which represents the images you're processing. Based on the code, the expected shape for x is [batch_size, 3, 32, 32] which corresponds to a batch of 32x32 RGB images.
     def __init__(self, z_dim=64):
         super(PrimaryNetwork, self).__init__()
         self.conv1 = nn.Conv2d(3, 16, 3, padding=1)
@@ -64,9 +80,10 @@ class PrimaryNetwork(nn.Module):
             self.zs.append(Embedding(self.zs_size[i], self.z_dim))
 
         self.global_avg = nn.AvgPool2d(8)
-        self.final = nn.Linear(64,10)
+        self.final = nn.Linear(64,21)
 
     def forward(self, x):
+    # The output of the forward method of the PrimaryNetwork class is the processed tensor x, which represents the predictions of the network for the given input images. The shape of this output tensor is [batch_size, 10], corresponding to the 10 class predictions for the CIFAR-10 dataset.
 
         x = F.relu(self.bn1(self.conv1(x)))
 
