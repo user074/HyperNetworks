@@ -2,7 +2,24 @@ import torch
 import torch.nn as nn
 from torch.nn.parameter import Parameter
 
+# Initialization:
 
+# f_size: The spatial size of the filter (e.g., 3 for a 3x3 filter).
+# z_dim: The dimension of the input vector z.
+# out_size: The number of output channels of the kernel.
+# in_size: The number of input channels of the kernel.
+# Parameters:
+
+# w1, b1: Parameters used to generate the convolutional kernel weights.
+# w2, b2: Parameters used to transform the input z vector.
+# Forward Method:
+
+# The input z is linearly transformed using w2 and b2, resulting in h_in.
+# This transformation essentially captures the relationship between the input z and the final kernel.
+# It reshapes h_in to have a size of (self.in_size, self.z_dim).
+# h_in is then transformed using w1 and b1 to produce h_final.
+# This transformation generates the actual convolutional kernel.
+# Finally, h_final is reshaped into a tensor with the shape of a convolutional kernel: (self.out_size, self.in_size, self.f_size, self.f_size). This is the tensor that will be used as a convolutional filter in the main/target network.
 class HyperNetwork(nn.Module):
 
     def __init__(self, f_size = 3, z_dim = 64, out_size=16, in_size=16):

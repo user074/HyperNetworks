@@ -1,7 +1,9 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from primary_net import Embedding, HyperNetwork
+from primary_net import Embedding
+from hypernetwork_modules import HyperNetwork
+
 from resnet_blocks import ResNetBlock, IdentityLayer
 
 class SegmentationNetwork(nn.Module):
@@ -49,7 +51,11 @@ class SegmentationNetwork(nn.Module):
         #     self.upsample_zs.append(Embedding(self.upsample_zs_size[i], self.z_dim))
 
 
-    def forward(self, x):
+    def forward(self, x, shared_embeddings = None):
+        # add the shared_embeddings
+        if shared_embeddings is not None:
+            self.zs = shared_embeddings
+
         x = F.relu(self.bn1(self.conv1(x)))
         
         for i in range(18):

@@ -82,8 +82,10 @@ class PrimaryNetwork(nn.Module):
         self.global_avg = nn.AvgPool2d(64)
         self.final = nn.Linear(64,20)
 
-    def forward(self, x):
-        # print("Input Shape:", x.shape)
+    def forward(self, x, shared_embeddings = None):
+        # add the shared_embeddings
+        if shared_embeddings is not None:
+            self.zs = shared_embeddings
 
     # The output of the forward method of the PrimaryNetwork class is the processed tensor x, which represents the predictions of the network for the given input images. The shape of this output tensor is [batch_size, 10], corresponding to the 10 class predictions for the CIFAR-10 dataset.
 
