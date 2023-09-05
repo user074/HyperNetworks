@@ -104,3 +104,10 @@ venv.bak/
 .mypy_cache/
 
 .idea
+
+#data
+/VOCdevkit
+hypernetworks_cifar_paper.pth
+visualization
+visualization.png
+visualization.png

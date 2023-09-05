@@ -79,10 +79,12 @@ class PrimaryNetwork(nn.Module):
         for i in range(36):
             self.zs.append(Embedding(self.zs_size[i], self.z_dim))
 
-        self.global_avg = nn.AvgPool2d(8)
-        self.final = nn.Linear(64,21)
+        self.global_avg = nn.AvgPool2d(64)
+        self.final = nn.Linear(64,20)
 
     def forward(self, x):
+        # print("Input Shape:", x.shape)
+
     # The output of the forward method of the PrimaryNetwork class is the processed tensor x, which represents the predictions of the network for the given input images. The shape of this output tensor is [batch_size, 10], corresponding to the 10 class predictions for the CIFAR-10 dataset.
 
         x = F.relu(self.bn1(self.conv1(x)))
@@ -92,8 +94,11 @@ class PrimaryNetwork(nn.Module):
             w1 = self.zs[2*i](self.hope)
             w2 = self.zs[2*i+1](self.hope)
             x = self.res_net[i](x, w1, w2)
+            # print("After ResNet Block", i, "Shape:", x.shape)
 
         x = self.global_avg(x)
+        # print("After Global Avg Pool:", x.shape)
         x = self.final(x.view(-1,64))
+        # print("After Final Layer:", x.shape)
 
         return x
